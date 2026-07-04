@@ -1,0 +1,12 @@
+return {
+  {
+    "lervag/vimtex",
+    lazy = false, -- VimTeX no debe cargarse de forma "perezosa" o rompe Zathura y el compilador
+    init = function()
+      -- Variables globales para Vimtex traducidas desde vimscript
+      vim.g.tex_flavor = "latex"
+      vim.g.vimtex_view_method = "zathura"
+      vim.g.vimtex_quickfix_mode = 0
+    end,
+  }
+}
