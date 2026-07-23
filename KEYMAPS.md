@@ -151,9 +151,19 @@ LazyVim maneja el autocompletado nativamente (con Blink.cmp/Nvim-cmp) y los serv
 | :--- | :--- |
 | `<Space>rl` | Ejecutar línea actual en REPL. |
 | `<Space>rb` | Ejecutar bloque de código actual. |
-| `<Space>rr` | Abrir/Cerrar consola REPL (Iron). |
+| `<Space>rr` | Abrir consola REPL interactiva (Iron). |
+| `<Space>rq` | Cerrar consola REPL (Iron). |
 | `<Space>pp` | Previsualizar documento Quarto. |
 | `<Space>pr` | Renderizar documento Quarto. |
+
+## 📝 Markdown (Edición y Previsualización)
+
+LazyVim incluye un soporte bellísimo para Markdown. Parte del texto se renderizará como íconos directamente en el editor, y puedes abrir una vista en vivo en tu navegador.
+
+| Atajo | Acción |
+| :--- | :--- |
+| `<Space>cp` | **Markdown Preview:** Abre el documento en tu navegador (se actualiza en vivo mientras escribes). |
+| `<Space>um` | **Alternar renderizado:** Apaga o enciende el renderizado visual (íconos y tamaños) directamente en el editor. |
 
 ---
 

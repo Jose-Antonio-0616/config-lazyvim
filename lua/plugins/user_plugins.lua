@@ -6,6 +6,7 @@ return {
     config = function()
       require("onedarkpro").setup({
           colors = {
+              -- Colores de sintaxis (Onedark base)
               bg = "#000000",
               fg = "#E0E0EE",
               red = "#FF5A70",
@@ -15,6 +16,14 @@ return {
               blue = "#1688F0",
               purple = "#BB8AFF",
               cyan = "#39A6FF",
+              
+              -- =====================================
+              -- 🇯🇲 Paleta "Cyber-Rasta" (Para UI)
+              -- =====================================
+              cr_bg = "#0A0A0A",     -- Fondo negro carbón
+              cr_red = "#FF003C",    -- Rojo Neón vibrante
+              cr_yellow = "#FFD700", -- Amarillo Dorado brillante
+              cr_green = "#00FF7F",  -- Verde Esmeralda Neón
           },
           styles = {
               types = "bold",
@@ -25,6 +34,7 @@ return {
               comments = "italic",
           },
           highlights = {
+              -- Mantener colores de sintaxis del código
               ["@tag"] = { fg = "${red}", style = "bold" },
               ["@tag.attribute"] = { fg = "${yellow}" },
               ["@tag.delimiter"] = { fg = "#5C6370" },
@@ -35,11 +45,16 @@ return {
               ["@variable.parameter"] = { fg = "${fg}" },
               ["@variable.builtin"] = { fg = "${blue}", style = "bold" },
               ["@keyword.function"] = { fg = "${purple}", style = "bold" },
-              FloatBorder = { fg = "${blue}" },
-              VertSplit = { fg = "${blue}" },
-              CursorLineNr = { fg = "${blue}", style = "bold" },
-              PmenuSel = { bg = "${blue}", fg = "#ffffff", style = "bold" },
-              MatchParen = { fg = "${green}", style = "bold", underline = true },
+              
+              -- Aplicar paleta "Cyber-Rasta" a la Interfaz Gráfica (UI)
+              Normal = { bg = "${cr_bg}" },
+              FloatBorder = { fg = "${cr_green}" },
+              TelescopeBorder = { fg = "${cr_green}" },
+              TelescopePromptBorder = { fg = "${cr_yellow}" },
+              VertSplit = { fg = "${cr_green}" },
+              CursorLineNr = { fg = "${cr_yellow}", style = "bold" },
+              PmenuSel = { bg = "${cr_red}", fg = "#ffffff", style = "bold" },
+              MatchParen = { fg = "${cr_yellow}", style = "bold", underline = true },
           },
           options = {
               bold = true,

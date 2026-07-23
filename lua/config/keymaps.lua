@@ -50,12 +50,26 @@ map("n", "<leader>ps", "<Cmd>QuartoClosePreview<CR>", { desc = "Quarto Close Pre
 map("n", "<leader>pr", "<Cmd>QuartoRender<CR>", { desc = "Quarto Render" })
 
 -- Iron REPL
-map("n", "<leader>rr", "<cmd>IronRepl<CR>", { desc = "Iron REPL" })
+map("n", "<leader>rr", function()
+  if vim.bo.filetype == "python" then
+    vim.ui.select({ "ipython", "python3" }, { prompt = "🐍 Elige el REPL para Python:" }, function(choice)
+      if not choice then return end
+      local config = require("iron.config")
+      if config.repl_definition and config.repl_definition.python then
+        config.repl_definition.python.command = { choice }
+      end
+      vim.cmd("IronRepl")
+    end)
+  else
+    vim.cmd("IronRepl")
+  end
+end, { desc = "Iron REPL (Interactivo)" })
 map("n", "<leader>rl", "<Cmd>lua require('iron.core').send_line()<CR>", { desc = "Iron Send Line" })
 map("v", "<leader>ri", "<Cmd>lua require('iron.core').visual_send()<CR>", { desc = "Iron Visual Send" })
 map("n", "<leader>rb", "<Cmd>lua require('iron.core').send_code_block()<CR>", { desc = "Iron Send Code Block" })
 map("n", "<leader>rk", "<Cmd>lua require('iron.core').send(nil, string.char(12))<CR>", { desc = "Iron Clear REPL" })
 map("n", "<leader>rR", "<cmd>IronRestart<CR>", { desc = "Iron Restart" })
+map("n", "<leader>rq", "<Cmd>lua require('iron.core').close_repl()<CR>", { desc = "Iron Close REPL" })
 
 -- Sniprun
 map("n", "<leader>rf", ":%SnipRun<CR>", { desc = "SnipRun File" })
