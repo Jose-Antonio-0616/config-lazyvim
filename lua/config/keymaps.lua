@@ -54,9 +54,23 @@ map("n", "<leader>rr", function()
   if vim.bo.filetype == "python" then
     vim.ui.select({ "ipython", "python3" }, { prompt = "🐍 Elige el REPL para Python:" }, function(choice)
       if not choice then return end
+      
+      -- Detectar entorno virtual automáticamente
+      local cmd_path = choice
+      local venv_bin = vim.fn.getcwd() .. "/.venv/bin/"
+      local myenv_bin = vim.fn.getcwd() .. "/myenv/bin/"
+      
+      if vim.fn.executable(venv_bin .. choice) == 1 then
+        cmd_path = venv_bin .. choice
+      elseif vim.fn.executable(myenv_bin .. choice) == 1 then
+        cmd_path = myenv_bin .. choice
+      elseif vim.env.VIRTUAL_ENV and vim.fn.executable(vim.env.VIRTUAL_ENV .. "/bin/" .. choice) == 1 then
+        cmd_path = vim.env.VIRTUAL_ENV .. "/bin/" .. choice
+      end
+
       local config = require("iron.config")
       if config.repl_definition and config.repl_definition.python then
-        config.repl_definition.python.command = { choice }
+        config.repl_definition.python.command = { cmd_path }
       end
       vim.cmd("IronRepl")
     end)

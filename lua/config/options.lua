@@ -40,3 +40,21 @@ opt.linebreak = true -- Evita cortar palabras a la mitad cuando envuelve la lín
 -- Forzamos a que el directorio de trabajo sea exactamente donde abriste nvim (cwd)
 vim.g.root_spec = { "cwd" }
 
+-- =========================================================================
+-- 🐍 Detección Global de Entornos Virtuales Python ("Zero-Activation")
+-- =========================================================================
+local venv_path = vim.fn.getcwd() .. "/.venv"
+local myenv_path = vim.fn.getcwd() .. "/myenv"
+
+if not vim.env.VIRTUAL_ENV then
+  if vim.fn.isdirectory(venv_path) == 1 then
+    vim.env.VIRTUAL_ENV = venv_path
+  elseif vim.fn.isdirectory(myenv_path) == 1 then
+    vim.env.VIRTUAL_ENV = myenv_path
+  end
+end
+
+-- Si detectamos el entorno, lo activamos a nivel del sistema interno de Neovim
+if vim.env.VIRTUAL_ENV then
+  vim.env.PATH = vim.env.VIRTUAL_ENV .. "/bin:" .. vim.env.PATH
+end
