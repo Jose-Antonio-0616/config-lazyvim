@@ -20,7 +20,7 @@ return {
               -- =====================================
               -- 🇯🇲 Paleta "Cyber-Rasta" (Para UI)
               -- =====================================
-              cr_bg = "#0A0A0A",     -- Fondo negro carbón
+              cr_bg = "#000000",     -- Fondo negro carbón (Totalmente negro)
               cr_red = "#FF003C",    -- Rojo Neón vibrante
               cr_yellow = "#FFD700", -- Amarillo Dorado brillante
               cr_green = "#00FF7F",  -- Verde Esmeralda Neón
