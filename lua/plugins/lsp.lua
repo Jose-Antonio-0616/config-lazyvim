@@ -46,6 +46,19 @@ return {
             config.settings.python.pythonPath = python_path
           end,
         },
+        -- Configuración de Clangd para PlatformIO/Embebidos
+        clangd = {
+          cmd = {
+            "clangd",
+            "--background-index",
+            "--clang-tidy",
+            "--header-insertion=iwyu",
+            "--completion-style=detailed",
+            "--function-arg-placeholders",
+            "--fallback-style=llvm",
+            "--query-driver=**/*-gcc,**/*-g++", -- Esto soluciona los errores de machine/endian.h
+          },
+        },
       },
     },
   },

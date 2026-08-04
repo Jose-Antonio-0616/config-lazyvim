@@ -126,11 +126,11 @@ map("n", "<leader>lD", "<cmd>lua require('config.layouts').finish_custom_layout(
 map("n", "<leader>lX", "<cmd>lua require('config.layouts').close_all_layout_windows()<CR>", { desc = "Layout: Close All" })
 
 -- ============ Comandos de Usuario (PlatformIO, MicroPython, LiveServer) ============
-vim.api.nvim_create_user_command("PioInitDB", "!pio run -t compiledb", {})
-vim.api.nvim_create_user_command("PioBuild", "Dispatch pio run", {})
-vim.api.nvim_create_user_command("PioUpload", "Dispatch pio run -t upload", {})
-vim.api.nvim_create_user_command("PioMonitor", "vsplit | resize 15 | term pio device monitor", {})
-vim.api.nvim_create_user_command("PioClean", "Dispatch pio run -t clean", {})
+vim.api.nvim_create_user_command("PioInitDB", "!uv run pio run -t compiledb", {})
+vim.api.nvim_create_user_command("PioBuild", "Dispatch uv run pio run", {})
+vim.api.nvim_create_user_command("PioUpload", "Dispatch uv run pio run -t upload", {})
+vim.api.nvim_create_user_command("PioMonitor", "vsplit | resize 15 | term uv run pio device monitor", {})
+vim.api.nvim_create_user_command("PioClean", "Dispatch uv run pio run -t clean", {})
 
 vim.api.nvim_create_user_command("MpRun", "Dispatch uv run mpremote run %", {})
 vim.api.nvim_create_user_command("MpUpload", "Dispatch uv run mpremote cp % :%:t", {})

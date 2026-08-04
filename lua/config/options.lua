@@ -58,3 +58,10 @@ end
 if vim.env.VIRTUAL_ENV then
   vim.env.PATH = vim.env.VIRTUAL_ENV .. "/bin:" .. vim.env.PATH
 end
+
+-- Asegurar que los archivos de Arduino se lean como C++
+vim.filetype.add({
+  extension = {
+    ino = "cpp",
+  }
+})
