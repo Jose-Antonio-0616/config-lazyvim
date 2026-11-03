@@ -146,6 +146,10 @@ vim.api.nvim_create_user_command("LiveServer", function()
   vim.fn.jobstart("live-server --open=" .. vim.fn.expand("%"))
 end, {})
 
+-- Live Server
+map("n", "<leader>os", "<cmd>LiveServer<CR>", { desc = "Start Live Server" })
+map("n", "<leader>ox", "<cmd>LiveServerStop<CR>", { desc = "Stop Live Server" })
+
 vim.api.nvim_create_user_command("LiveServerStop", function()
   vim.fn.system("pkill -f live-server")
   print("🛑 Servidor detenido.")

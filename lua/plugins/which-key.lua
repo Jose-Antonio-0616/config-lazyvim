@@ -12,7 +12,7 @@ return {
         { "<leader>p", group = "Quarto", icon = "📊" },
         { "<leader>v", group = "LaTeX", icon = "📝" },
         { "<leader>l", group = "Layouts", icon = "🎨" },
-        { "<leader>n", group = "LiveServer", icon = "🌐" },
+        { "<leader>o", group = "LiveServer", icon = "🌐" },
       })
     end,
   }

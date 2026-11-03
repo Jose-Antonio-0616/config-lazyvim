@@ -79,14 +79,25 @@ Diseña tu propio entorno de forma interactiva paso a paso.
 
 Pasos esenciales para comenzar proyectos embebidos con esta configuración.
 
-#### **PlatformIO**
-1.  **Buscar placa:** Encuentra el ID de tu placa de desarrollo.
+#### **PlatformIO (Aislado con `uv`)**
+Al instalar PlatformIO dentro de un entorno virtual de Python, evitamos contaminar el sistema base y mantenemos cada proyecto independiente.
+1.  **Instalar PlatformIO:**
     ```bash
-    pio boards [filtro]  # Ej: pio boards esp32
+    uv add --dev platformio
     ```
-2.  **Iniciar Proyecto:** Crea la estructura básica.
+2.  **Buscar placa:** Encuentra el ID de tu placa de desarrollo.
     ```bash
-    pio project init --board [ID]
+    uv run pio boards                 # Listar todas las placas
+    uv run pio boards [filtro]        # Filtrar (Ej: uv run pio boards esp32)
+    ```
+3.  **Iniciar Proyecto:** Genera la estructura e instala dependencias de la placa.
+    ```bash
+    uv run pio project init --ide vim --board [ID]
+    ```
+4.  **Generar Autocompletado (LSP):** Abre Neovim y ejecuta el atajo **`<leader>mi`**. Esto permitirá que el motor `clangd` reconozca automáticamente todas las librerías nativas y de Arduino.
+5.  **Limpiar Archivos Basura:**
+    ```bash
+    uv run pio system prune
     ```
 
 #### **MicroPython (Workflow Moderno con `uv`)**
@@ -100,6 +111,16 @@ Esta configuración asume el uso de `uv` para gestionar herramientas y stubs.
     ```bash
     uv add --dev pynvim ruff mpremote micropython-esp32-stubs
     ```
+
+#### **Proyectos de Python (General)**
+Para sacar el máximo provecho a las capacidades de Neovim en cualquier proyecto de Data Science o Desarrollo Web:
+1.  **Instalar herramientas de compilador e interactividad:**
+    ```bash
+    uv add --dev pynvim ruff ipython
+    ```
+    * `pynvim`: Para que el editor se comunique con tu entorno.
+    * `ruff`: Herramienta de sintaxis y formateo ultrarrápido.
+    * `ipython`: Intérprete interactivo con "esteroides" (úsalo con `<leader>rr`).
 
 ### Atajos de Embebidos
 
