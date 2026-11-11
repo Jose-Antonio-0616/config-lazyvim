@@ -145,6 +145,22 @@ LazyVim maneja el autocompletado nativamente (con Blink.cmp/Nvim-cmp) y los serv
 
 ---
 
+---
+
+## ⚡ C / C++ (Ejecución, REPL y Navegación)
+
+| Atajo | Acción | Descripción |
+| :--- | :--- | :--- |
+| `<Space>rc` | **Compilar y Correr** | Guarda y compila con `g++ -std=c++20` (o `make`) en terminal interactiva. |
+| `<Space>rr` | **C++ REPL (Iron)** | Abre consola interactiva de C++ (`clang-repl` o `cling`). |
+| `<Space>rl` | **Send Line** | Envia la línea actual al REPL. |
+| `<Space>rb` | **Send Block** | Envia el bloque de código actual al REPL (`//`). |
+| `<Space>ri` | **Visual Send** | Envia la selección visual al REPL. |
+| `<Space>rq` | **Close REPL** | Cierra la consola REPL de Iron. |
+| `<Space>ch` | **Header / Source** | Alterna instantáneamente entre archivo `.h`/`.hpp` y `.cpp`. |
+
+---
+
 ## 📊 Ciencia de Datos (Quarto/Iron)
 
 | Atajo | Acción |
@@ -171,5 +187,6 @@ LazyVim incluye un soporte bellísimo para Markdown. Parte del texto se renderiz
 
 | Atajo | Acción |
 | :--- | :--- |
-| `<Space>n` | **LiveServer:** Inicia un servidor local. |
+| `<Space>os` | **LiveServer Start:** Inicia un servidor local. |
+| `<Space>ox` | **LiveServer Stop:** Detiene el servidor local. |
 | `<Space>rs` | **Sniprun:** Ejecutar fragmento de JS/Python seleccionado en memoria. |

@@ -49,6 +49,49 @@ map("n", "<leader>pp", "<Cmd>QuartoPreview<CR>", { desc = "Quarto Preview" })
 map("n", "<leader>ps", "<Cmd>QuartoClosePreview<CR>", { desc = "Quarto Close Preview" })
 map("n", "<leader>pr", "<Cmd>QuartoRender<CR>", { desc = "Quarto Render" })
 
+-- Ejecutar C/C++ (Compilar y Correr en Terminal Interactiva)
+local function run_cpp()
+  if vim.bo.modified then
+    vim.cmd("write")
+  end
+
+  local file = vim.fn.expand("%:p")
+  local file_dir = vim.fn.expand("%:p:h")
+  local file_root = vim.fn.expand("%:t:r")
+  local ext = vim.fn.expand("%:e")
+
+  if ext ~= "cpp" and ext ~= "c" and ext ~= "cc" and ext ~= "cxx" then
+    vim.notify("⚠️ El archivo actual no es de C o C++ (." .. ext .. ")", vim.log.levels.WARN, { title = "Run C/C++" })
+    return
+  end
+
+  local has_makefile = vim.fn.filereadable(file_dir .. "/Makefile") == 1 or vim.fn.filereadable(file_dir .. "/makefile") == 1
+  local compiler = (ext == "c") and "gcc" or "g++"
+  local std_flag = (ext == "c") and "-std=c17" or "-std=c++20"
+  local out_bin = file_dir .. "/" .. file_root
+
+  local compile_and_run
+  if has_makefile then
+    compile_and_run = string.format("cd '%s' && make && './%s'", file_dir, file_root)
+  else
+    compile_and_run = string.format("cd '%s' && %s %s -O2 -Wall '%s' -o '%s' && '%s'", file_dir, compiler, std_flag, file, out_bin, out_bin)
+  end
+
+  local term_cmd = string.format(
+    "bash -c \"%s; echo; echo '────────────────────────────────────────'; read -n 1 -s -r -p 'Presiona cualquier tecla para cerrar...'; exit\"",
+    compile_and_run:gsub('"', '\\"')
+  )
+
+  -- Abrir en panel vertical derecho (40% de ancho, idéntico a Iron)
+  local width = math.floor(vim.o.columns * 0.40)
+  if width < 45 then width = 45 end
+  vim.cmd(string.format("botright %dvsplit | term %s", width, term_cmd))
+  vim.cmd("startinsert")
+end
+
+map("n", "<leader>rc", run_cpp, { desc = "Run C/C++ (Compile & Execute)" })
+vim.api.nvim_create_user_command("CppRun", run_cpp, { desc = "Compilar y ejecutar archivo C/C++" })
+
 -- Iron REPL
 map("n", "<leader>rr", function()
   if vim.bo.filetype == "python" then
@@ -74,6 +117,32 @@ map("n", "<leader>rr", function()
       end
       vim.cmd("IronRepl")
     end)
+  elseif vim.bo.filetype == "cpp" or vim.bo.filetype == "c" then
+    local repl_cmd = nil
+    for _, bin in ipairs({ "clang-repl", "clang-repl-19", "cling", "root" }) do
+      if vim.fn.executable(bin) == 1 then
+        repl_cmd = bin
+        break
+      end
+    end
+
+    if not repl_cmd then
+      vim.notify(
+        "⚠️ No se encontró un REPL de C++ instalado (clang-repl o cling).\n"
+          .. "Para activarlo en Debian/K-LionCore, ejecuta en tu terminal:\n"
+          .. "  sudo apt install clang-tools-19",
+        vim.log.levels.WARN,
+        { title = "Iron C++ REPL" }
+      )
+      return
+    end
+
+    local config = require("iron.config")
+    local ft = vim.bo.filetype
+    if config.repl_definition and config.repl_definition[ft] then
+      config.repl_definition[ft].command = { repl_cmd }
+    end
+    vim.cmd("IronRepl")
   else
     vim.cmd("IronRepl")
   end
@@ -85,11 +154,17 @@ map("n", "<leader>rk", "<Cmd>lua require('iron.core').send(nil, string.char(12))
 map("n", "<leader>rR", "<cmd>IronRestart<CR>", { desc = "Iron Restart" })
 map("n", "<leader>rq", "<Cmd>lua require('iron.core').close_repl()<CR>", { desc = "Iron Close REPL" })
 
--- Sniprun
-map("n", "<leader>rf", ":%SnipRun<CR>", { desc = "SnipRun File" })
+-- Ejecución de archivos y Sniprun
+map("n", "<leader>rf", function()
+  if vim.bo.filetype == "cpp" or vim.bo.filetype == "c" then
+    run_cpp()
+  else
+    vim.cmd("%SnipRun")
+  end
+end, { desc = "Run File (C/C++ o SnipRun)" })
 map("v", "<leader>rs", ":SnipRun<CR>", { desc = "SnipRun Visual" })
 map("n", "<leader>rs", ":SnipRun<CR>", { desc = "SnipRun Line" })
-map("n", "<leader>rc", ":SnipClose<CR>", { desc = "SnipRun Close" })
+map("n", "<leader>rX", ":SnipClose<CR>", { desc = "SnipRun Close" })
 
 -- VimTex (Changed prefix from <leader>x to <leader>v to avoid breaking Trouble/Diagnostics)
 map("n", "<leader>vc", "<cmd>VimtexCompile<CR>", { desc = "Vimtex Compile" })
@@ -141,9 +216,40 @@ vim.api.nvim_create_user_command("MpInstall", function(opts)
   vim.cmd("vsplit | term uv run mpremote mip install " .. opts.args)
 end, { nargs = 1 })
 
+local live_server_job = nil
+
 vim.api.nvim_create_user_command("LiveServer", function()
+  if live_server_job then
+    vim.notify("⚠️ Live Server ya está en ejecución.", vim.log.levels.WARN, { title = "LiveServer" })
+    return
+  end
+
+  local file = vim.fn.expand("%:t")
+  local file_dir = vim.fn.expand("%:p:h")
+  if file_dir == "" then
+    file_dir = vim.fn.getcwd()
+  end
+
+  local cmd = { "live-server" }
+  if file ~= "" then
+    table.insert(cmd, "--open=" .. file)
+  end
+
   print("🚀 Iniciando Live Server...")
-  vim.fn.jobstart("live-server --open=" .. vim.fn.expand("%"))
+  live_server_job = vim.fn.jobstart(cmd, {
+    cwd = file_dir,
+    detach = true,
+    on_exit = function()
+      live_server_job = nil
+    end,
+  })
+
+  if live_server_job <= 0 then
+    live_server_job = nil
+    vim.notify("❌ Error: No se pudo iniciar Live Server.", vim.log.levels.ERROR, { title = "LiveServer" })
+  else
+    vim.notify("🌐 Live Server iniciado en segundo plano.", vim.log.levels.INFO, { title = "LiveServer" })
+  end
 end, {})
 
 -- Live Server
@@ -151,6 +257,12 @@ map("n", "<leader>os", "<cmd>LiveServer<CR>", { desc = "Start Live Server" })
 map("n", "<leader>ox", "<cmd>LiveServerStop<CR>", { desc = "Stop Live Server" })
 
 vim.api.nvim_create_user_command("LiveServerStop", function()
-  vim.fn.system("pkill -f live-server")
-  print("🛑 Servidor detenido.")
+  if live_server_job and live_server_job > 0 then
+    vim.fn.jobstop(live_server_job)
+    live_server_job = nil
+    print("🛑 Live Server detenido.")
+  else
+    vim.fn.system("pkill -f 'node.*live-server'")
+    print("🛑 Servidor detenido.")
+  end
 end, {})

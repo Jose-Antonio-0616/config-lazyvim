@@ -134,6 +134,36 @@ return {
                   typescript = {
                       command = { "deno" },
                       block_dividers = { "//" }
+                  },
+                  cpp = {
+                      command = function()
+                          if vim.fn.executable("clang-repl") == 1 then
+                              return { "clang-repl" }
+                          elseif vim.fn.executable("clang-repl-19") == 1 then
+                              return { "clang-repl-19" }
+                          elseif vim.fn.executable("cling") == 1 then
+                              return { "cling" }
+                          elseif vim.fn.executable("root") == 1 then
+                              return { "root", "-l" }
+                          else
+                              return { "clang-repl" }
+                          end
+                      end,
+                      block_dividers = { "//", "/*", "*/" },
+                  },
+                  c = {
+                      command = function()
+                          if vim.fn.executable("clang-repl") == 1 then
+                              return { "clang-repl" }
+                          elseif vim.fn.executable("clang-repl-19") == 1 then
+                              return { "clang-repl-19" }
+                          elseif vim.fn.executable("cling") == 1 then
+                              return { "cling" }
+                          else
+                              return { "clang-repl" }
+                          end
+                      end,
+                      block_dividers = { "//", "/*", "*/" },
                   }
               },
               repl_filetype = function(bufnr, ft) return ft end,
